@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Low latency Order Book/Low latency Order Book.vcxproj" Id="6e72ff00-4847-4863-ad12-51c8228412ab" />
+</Solution>
