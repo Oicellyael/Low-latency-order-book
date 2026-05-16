@@ -127,9 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="FixParser.h" />
     <ClInclude Include="Order.h" />
     <ClInclude Include="OrderBook.h" />
     <ClInclude Include="OrderPool.h" />
+    <ClInclude Include="RingBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

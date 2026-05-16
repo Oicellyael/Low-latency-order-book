@@ -2,12 +2,15 @@
 #include "OrderPool.h"
 struct OrderBook
 {
-	std::map<int64_t, PriceLvl> asks;
-	std::map<int64_t, PriceLvl, std::greater<int64_t>> bids;
+	std::map<int64_t, PriceLvl> asks;                              // sells: lowest price first
+	std::map<int64_t, PriceLvl, std::greater<int64_t>> bids;       // buys: highest price first
 	OrderPool pool;
 
 	void add_order(uint64_t order_id, int64_t price, uint64_t quantity, Side side, OrderType type) {
+		// Try to trade first; quantity = how much is still left
 		quantity = match_order(price, side, quantity);
+
+		// Fully filled, or market with nothing left to rest in book
 		if (quantity == 0 || type == OrderType::Market) return;
 
 		Order* order = pool.acquire();
@@ -53,9 +56,11 @@ struct OrderBook
 
 	uint64_t match_order(int64_t price, Side side, uint64_t quantity) {
 		if (side == Side::Buy) {
+			// Buy only hits asks at or below our limit price (best ask = begin())
 			while (quantity > 0 && !asks.empty() && price >= asks.begin()->first) {
 				PriceLvl& lvl = asks.begin()->second;
 				while (quantity > 0 && lvl.head != nullptr) {
+					// Trade the smaller of: incoming qty vs front of queue at this price
 					uint64_t fill_qty = std::min(quantity, lvl.head->quantity);
 					quantity -= fill_qty;
 					lvl.head->quantity -= fill_qty;
@@ -63,17 +68,18 @@ struct OrderBook
 
 					if (lvl.head->quantity == 0) {
 						Order* filled = lvl.head;
-						lvl.head = filled->next;
+						lvl.head = filled->next;  // next order at same price level
 						if (lvl.head != nullptr) lvl.head->prev = nullptr;
 						lvl.order_count--;
-						pool.release(filled);
+						pool.release(filled);     // return memory to pool
 					}
 				}
 				if (lvl.head == nullptr) lvl.tail = nullptr;
-				if (lvl.head == nullptr) asks.erase(asks.begin());
+				if (lvl.head == nullptr) asks.erase(asks.begin());  // price level empty
 			}
 		}
 		else {
+			// Sell only hits bids at or above our limit price (best bid = begin())
 			while (quantity > 0 && !bids.empty() && price <= bids.begin()->first) {
 				PriceLvl& lvl = bids.begin()->second;
 				while (quantity > 0 && lvl.head != nullptr) {
@@ -94,6 +100,6 @@ struct OrderBook
 				if (lvl.head == nullptr) bids.erase(bids.begin());
 			}
 		}
-		return quantity;
+		return quantity;  // leftover goes into book (if limit order)
 	}
 };

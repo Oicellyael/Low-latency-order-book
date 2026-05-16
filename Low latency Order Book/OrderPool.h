@@ -2,6 +2,7 @@
 #include "Order.h"
 
 
+// Pre-allocated orders in heap; no new/delete on hot path
 struct OrderPool
 {
 	std::vector<Order> stack;
@@ -20,11 +21,11 @@ struct OrderPool
 		if (top == 0) return nullptr;
 		--top;
 		Order* ptr = free_stack[top];
-		ptr->prev = nullptr;
+		ptr->prev = nullptr;  // clear old list links from reuse
 		ptr->next = nullptr;
 		return ptr;
 	}
-	
+
 	void release(Order* ptr) {
 		if (top >= 65536 || ptr == nullptr) return; 
 		free_stack[top++] = ptr;

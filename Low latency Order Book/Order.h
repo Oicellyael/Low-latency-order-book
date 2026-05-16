@@ -5,6 +5,9 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <array>
+#include <atomic>
+#include <string>
 
 enum class Side : uint8_t { Buy, Sell };
 enum class OrderType : uint8_t { Limit, Market };
