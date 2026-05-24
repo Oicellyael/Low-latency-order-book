@@ -100,7 +100,10 @@ Other tags (e.g. `8=FIX.4.2`) may appear in messages but are ignored.
 In C++ string literals, write SOH so it is not merged with digits: `"44=100\x01" "38=50\x01"` (not `\x0138`).
 
 
-<img width="688" height="1077" alt="image" src="https://github.com/user-attachments/assets/407e62f5-d13d-42cc-90ad-cb036c5ae269" />
+<img width="465" height="573" alt="image" src="https://github.com/user-attachments/assets/0a46fe33-ed7b-4c06-87b1-c164c4651d0b" />
+
+
+<img width="449" height="542" alt="image" src="https://github.com/user-attachments/assets/5b61baef-55e6-405e-bcbf-e6633c64eb55" />
 
 
 ## Build & run
